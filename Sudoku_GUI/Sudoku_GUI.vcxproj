@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudoku_GUI.c" />
+    <ClCompile Include="Sudoku_solve.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sudoku_GUI.rc" />

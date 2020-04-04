@@ -10,6 +10,10 @@
 #include <windows.h>
 // C RunTime Header Files
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdbool.h>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
