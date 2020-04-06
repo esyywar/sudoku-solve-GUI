@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="sudoku_macros.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sudoku_GUI.h" />
     <ClInclude Include="targetver.h" />

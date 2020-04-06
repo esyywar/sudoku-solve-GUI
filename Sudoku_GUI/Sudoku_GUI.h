@@ -6,12 +6,13 @@
 #ifndef SUDOKU_HEADER
 #define SUDOKU_HEADER
 
-void test();
+
+/****************************** SUDOKU SOLVE FUNCTIONS ******************************************/
 
 /*
 * Print the full sudoku as it is
 */
-void printSoln(uint8_t sudoku[9][9]);
+void printSoln(int sudoku[9][9]);
 
 
 /*
@@ -23,7 +24,7 @@ void printSoln(uint8_t sudoku[9][9]);
 *
 * Return:   bool valid - tell if valid
 */
-bool rowCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t number);
+bool rowCheck(int sudoku[9][9], int row, int number);
 
 
 /*
@@ -35,7 +36,7 @@ bool rowCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t number);
 *
 * Return:   bool valid - tell if valid
 */
-bool columnCheck(uint8_t sudoku[9][9], uint8_t column, uint8_t number);
+bool columnCheck(int sudoku[9][9], int column, int number);
 
 
 /*
@@ -48,7 +49,7 @@ bool columnCheck(uint8_t sudoku[9][9], uint8_t column, uint8_t number);
 *
 * Return:   bool valid - tell if valid
 */
-bool boxCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number);
+bool boxCheck(int sudoku[9][9], int row, int column, int number);
 
 
 /*
@@ -61,7 +62,7 @@ bool boxCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number)
 *
 * Return:   bool valid - tell if valid
 */
-bool isValid(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number);
+bool isValid(int sudoku[9][9], int row, int column, int number);
 
 
 /*
@@ -73,7 +74,7 @@ bool isValid(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number);
 *
 * Return:   bool valid - tell if blank found or not (meaning puzzle is solved)
 */
-bool findBlank(uint8_t sudoku[9][9], uint8_t* pRow, uint8_t* pColumn);
+bool findBlank(int sudoku[9][9], int* pRow, int* pColumn);
 
 
 /*
@@ -81,7 +82,7 @@ bool findBlank(uint8_t sudoku[9][9], uint8_t* pRow, uint8_t* pColumn);
 *
 * Inputs:   uint8_t sudoku[9][9] - sudoku grid
 */
-bool solveSudoku(uint8_t sudoku[9][9]);
+bool solveSudoku(HWND hWnd, int sudoku[9][9]);
 
 #endif
 

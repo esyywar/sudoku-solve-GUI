@@ -27,6 +27,9 @@
     <ClInclude Include="Sudoku_GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sudoku_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sudoku_GUI.rc">

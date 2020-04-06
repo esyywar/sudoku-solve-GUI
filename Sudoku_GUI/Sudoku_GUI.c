@@ -1,12 +1,9 @@
 // Sudoku_GUI.cpp : Defines the entry point for the application.
 //
 
-#include "framework.h"
-#include "Resource.h"
-#include "Sudoku_GUI.h"
+#include "sudoku_GUI.h"
+#include "sudoku_macros.h"
 
-#define MAX_LOADSTRING      100
-#define NUMBER_ENTERED      1
 
 // Global Variables:
 HINSTANCE hInst;                            // current instance
@@ -16,7 +13,11 @@ WCHAR szWindowClass[MAX_LOADSTRING];        // the main window class name
 // Forward declarations of functions included in this code module:
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+HWND gridFrame;
+
 void AddControls();
+void paintWindow();
 
 
 // Main windows function
@@ -44,7 +45,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SUDOKUGUI));
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW - 1);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_SUDOKUGUI);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -97,29 +98,82 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case NUMBER_ENTERED:
-            {
+    {
+        int wp = LOWORD(wParam);
+        int btnResp;
 
-            } break;
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
+        // Parse the menu selections:
+        switch (wp)
+        {
+        case 1:
+        {
+
+        } break;
+        case SOLVE_BTN_CLICK:
+        {
+            int sudoku[9][9];
+            bool didGet = FALSE;
+
+            // Get all values in grid which will be passed to solving function
+            for (int i = 0; i < 81; i++)
+            {
+                int row = i / 9;
+                int column = i % 9;
+                sudoku[row][column] = GetDlgItemInt(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), &didGet, FALSE);
+            }
+
+            // Call function to solve in Sudoku_solve.c
+            solveSudoku(hWnd, sudoku);
+
+        } break;
+        case RESTART_BTN_CLICK:
+        {
+            // TODO
+        } break;
+        case CLOSE_BTN_CLICK:
+        {
+            btnResp = MessageBoxEx(hWnd, L"Are you sure you want to exit?", L"Exit", MB_YESNO | MB_ICONEXCLAMATION, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+
+            if (btnResp == IDYES)
+            {
                 DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
+            }
+        } break;
+        case IDM_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            DestroyWindow(hWnd);
+            break;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+    } break;
+    case WM_KEYDOWN:
+    {
+        printf("Got it");
+    } break;
+    case WM_NOTIFY:
+    {
+        // Check where notification is from
+        if (((LPNMHDR)lParam)->idFrom == MSG_FROM_SDKU_SOLVE)
+        {
+            // Check if we are placing or removing a number
+            if (((LPNMHDR)lParam)->code == SDKU_NUMBER_PUT)
+            {
+                // Place number in sudoku
+            }
+            else if (((LPNMHDR)lParam)->code == SDKU_NUMBER_RM)
+            {
+                // Remove the number
             }
         }
-        break;
+        //TODO
+    } break;
     case WM_CREATE:
     {
         AddControls(hWnd);
+        paintWindow();
     } break;
     case WM_PAINT:
         {
@@ -161,35 +215,54 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 //Adding sudoku grid controls
 void AddControls(HWND hWnd)
 {
-    HWND title, gridFrame, grid[9][9], solveBtn, restartBtn, closeBtn;
+    HWND title, solveBtn, restartBtn, closeBtn, grid[81];
 
+    // Title of window as static control
     title = CreateWindowEx(0, L"STATIC", L"SUDOKU SOLVER", WS_CHILD | WS_VISIBLE | ES_CENTER, 85, 30, 300, 40, hWnd, NULL, NULL, NULL);
     ShowWindow(title, 1);
     UpdateWindow(title);
 
-    gridFrame = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_THICKFRAME, 50, 95, 370, 370, hWnd, NULL, NULL, NULL);
+    // Creating a static control to act as frame for the sudoku
+    gridFrame = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_THICKFRAME, 44, 89, 382, 382, hWnd, (HMENU)STATIC_GRID_FRAME, NULL, NULL);
     ShowWindow(gridFrame, 1);
     UpdateWindow(gridFrame);
 
-    for (int i = 0; i < 9; i++)
+    // Creating 9x9 edit controls to act as sudoku boxes
+    for (int i = 0; i < 81; i++)
     {
-        for (int j = 0; j < 9; j++)
-        {
-            grid[i][j] = CreateWindowExW(0, L"EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_CENTER | ES_NUMBER | WS_BORDER, 55 + (i * 40), 100 + (j * 40), 40, 40, hWnd, (HMENU)NUMBER_ENTERED, NULL, NULL);
-            ShowWindow(grid[i][j], 1);
-            UpdateWindow(grid[i][j]);
-        } 
+        int xStart = 55 + ((i % 9) * 40);
+        int yStart = 100 + ((i / 9) * 40);
+
+        grid[i] = CreateWindowExW(0, L"EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_CENTER | ES_NUMBER | WS_BORDER, xStart, yStart, 40, 40, hWnd, (HMENU)(i + 1), NULL, NULL);
+        ShowWindow(grid[i], 1);
+        UpdateWindow(grid[i]);
     }
 
-    solveBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"SOLVE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 40, 500, 100, 40, hWnd, NULL, NULL, NULL);
+    // Solve button control
+    solveBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"SOLVE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 40, 500, 100, 40, hWnd, (HMENU)SOLVE_BTN_CLICK, NULL, NULL);
     ShowWindow(solveBtn, 1);
     UpdateWindow(solveBtn);
 
-    restartBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"RESTART", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 190, 500, 100, 40, hWnd, NULL, NULL, NULL);
+    // Restart button control
+    restartBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"RESTART", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 190, 500, 100, 40, hWnd, (HMENU)RESTART_BTN_CLICK, NULL, NULL);
     ShowWindow(restartBtn, 1);
     UpdateWindow(restartBtn);
 
-    closeBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"CLOSE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 340, 500, 100, 40, hWnd, NULL, NULL, NULL);
+    // Close button control
+    closeBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"CLOSE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 340, 500, 100, 40, hWnd, (HMENU)CLOSE_BTN_CLICK, NULL, NULL);
     ShowWindow(closeBtn, 1);
     UpdateWindow(closeBtn);
+}
+
+void paintWindow()
+{
+    DWORD oldColour;
+
+    oldColour = GetSysColor((HMENU)STATIC_GRID_FRAME);
+
+    int purple = RGB(0x80, 0x00, 0x80);  // dark purple
+    int element = STATIC_GRID_FRAME;
+
+    bool try = SetSysColors(1, &element, &purple);
+    printf(try ? "true" : "false");
 }

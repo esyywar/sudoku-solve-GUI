@@ -1,10 +1,11 @@
 #include "framework.h"
+#include "sudoku_macros.h"
 
 /*
 *   Print out the sudoku grid.
 *   This function is called only after puzzle is solved.
 */
-void printSoln(uint8_t sudoku[9][9])
+void printSoln(int sudoku[9][9])
 {
     for (int i = 0; i < 9; i++)
     {
@@ -19,7 +20,7 @@ void printSoln(uint8_t sudoku[9][9])
 /*
 *   Check if placing the value will break the row
 */
-bool rowCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t number)
+bool rowCheck(int sudoku[9][9], int row, int number)
 {
     for (int i = 0; i < 9; i++)
     {
@@ -35,7 +36,7 @@ bool rowCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t number)
 /*
 *   Check if placing the value will break the column
 */
-bool columnCheck(uint8_t sudoku[9][9], uint8_t column, uint8_t number)
+bool columnCheck(int sudoku[9][9], int column, int number)
 {
     for (int i = 0; i < 9; i++)
     {
@@ -51,10 +52,10 @@ bool columnCheck(uint8_t sudoku[9][9], uint8_t column, uint8_t number)
 /*
 *   Check if placing the value will break the cell
 */
-bool boxCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number)
+bool boxCheck(int sudoku[9][9], int row, int column, int number)
 {
-    uint8_t cellRow = (row / 3) * 3;
-    uint8_t cellColumn = (column / 3) * 3;
+    int cellRow = (row / 3) * 3;
+    int cellColumn = (column / 3) * 3;
 
     for (int i = 0; i < 3; i++)
     {
@@ -73,7 +74,7 @@ bool boxCheck(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number)
 /*
 *   Checks row, column and cell to determine if number can be placed in a position
 */
-bool isValid(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number)
+bool isValid(int sudoku[9][9], int row, int column, int number)
 {
     if (rowCheck(sudoku, row, number) && columnCheck(sudoku, column, number) && boxCheck(sudoku, row, column, number))
     {
@@ -88,7 +89,7 @@ bool isValid(uint8_t sudoku[9][9], uint8_t row, uint8_t column, uint8_t number)
 /*
 *   Find blank point in sudoku
 */
-bool findBlank(uint8_t sudoku[9][9], uint8_t* pRow, uint8_t* pColumn)
+bool findBlank(int sudoku[9][9], int* pRow, int* pColumn)
 {
     for (int i = 0; i < 9; i++)
     {
@@ -110,12 +111,12 @@ bool findBlank(uint8_t sudoku[9][9], uint8_t* pRow, uint8_t* pColumn)
 *
 *   Makes recursive calls using backtracking algorithm to solve
 */
-bool solveSudoku(uint8_t sudoku[9][9])
+bool solveSudoku(HWND hWnd, int sudoku[9][9])
 {
-    // printSoln(sudoku);
-    // printf("\n\n");
+    // Variables to send application data
+    NMHDR nmh;
 
-    uint8_t blankRow, blankColumn;
+    int blankRow, blankColumn;
 
     bool isSolved = findBlank(sudoku, &blankRow, &blankColumn);
 
@@ -130,7 +131,14 @@ bool solveSudoku(uint8_t sudoku[9][9])
         {
             sudoku[blankRow][blankColumn] = i;
 
-            if (solveSudoku(sudoku))
+            // Send application data to place number
+            nmh.idFrom = MSG_FROM_SDKU_SOLVE;
+            nmh.code = SDKU_NUMBER_PUT;
+            nmh.hwndFrom = hWnd;
+            SendMessage(hWnd, WM_NOTIFY, i, (LPARAM)&nmh);
+
+            // Recursive backtracking
+            if (solveSudoku(hWnd, sudoku))
             {
                 return true;
             }
@@ -138,6 +146,12 @@ bool solveSudoku(uint8_t sudoku[9][9])
             {
                 // backtrack
                 sudoku[blankRow][blankColumn] = 0;
+
+                // Send application data to remove number
+                nmh.idFrom = MSG_FROM_SDKU_SOLVE;
+                nmh.code = SDKU_NUMBER_RM;
+                nmh.hwndFrom = hWnd;
+                SendMessage(hWnd, WM_NOTIFY, i, (LPARAM)&nmh);
             }
         }
     }
@@ -149,10 +163,10 @@ bool solveSudoku(uint8_t sudoku[9][9])
 *   Calls driver 'solveSudoku' function
 *
 *   Solution is printed or else a message shows telling there is no solution
-*/
+
 int main(void)
 {
-    uint8_t sudoku[9][9] = {
+    int sudoku[9][9] = {
         {0, 0, 8, 2, 0, 0, 0, 0, 0},
         {0, 1, 2, 0, 0, 5, 8, 0, 0},
         {4, 0, 0, 3, 0, 0, 0, 1, 0},
@@ -176,8 +190,4 @@ int main(void)
 
     return 0;
 }
-
-void test()
-{
-    printf("I am working!");
-}
+*/
