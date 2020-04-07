@@ -112,7 +112,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case SOLVE_BTN_CLICK:
         {
             int sudoku[9][9];
-            bool didGet = FALSE;
+            BOOL didGet = FALSE;
 
             // Get all values in grid which will be passed to solving function
             for (int i = 0; i < 81; i++)
@@ -128,7 +128,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } break;
         case RESTART_BTN_CLICK:
         {
-            // TODO
+            //SendMessage(hWnd, WM_NOTIFY, NULL, NULL);
         } break;
         case CLOSE_BTN_CLICK:
         {
@@ -149,25 +149,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
     } break;
-    case WM_KEYDOWN:
-    {
-        printf("Got it");
-    } break;
     case WM_NOTIFY:
     {
-        // Check where notification is from
-        if (((LPNMHDR)lParam)->idFrom == MSG_FROM_SDKU_SOLVE)
-        {
-            // Check if we are placing or removing a number
-            if (((LPNMHDR)lParam)->code == SDKU_NUMBER_PUT)
-            {
-                // Place number in sudoku
-            }
-            else if (((LPNMHDR)lParam)->code == SDKU_NUMBER_RM)
-            {
-                // Remove the number
-            }
-        }
+        printf("called!\n");
+
+        Sudoku_Append_t test = *((Sudoku_Append_t*)lParam);
+        int testNum = test.action;
+        printf("%i\n", testNum);
+
+        //int test = (Sudoku_Append_t*)lParam->nmh.idFrom;
         //TODO
     } break;
     case WM_CREATE:

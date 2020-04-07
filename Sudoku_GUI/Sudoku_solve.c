@@ -114,17 +114,20 @@ bool findBlank(int sudoku[9][9], int* pRow, int* pColumn)
 bool solveSudoku(HWND hWnd, int sudoku[9][9])
 {
     // Variables to send application data
-    NMHDR nmh;
+    Sudoku_Append_t sudokuData;
 
     int blankRow, blankColumn;
 
+    // Search for unsolved box in sudoku
     bool isSolved = findBlank(sudoku, &blankRow, &blankColumn);
 
+    // Return if no unsolved boxes found
     if (isSolved)
     {
         return true;
     }
 
+    // Decision space for each box is 1 to 9 - try these values in the unsolved box
     for (int i = 1; i <= 9; i++)
     {
         if (isValid(sudoku, blankRow, blankColumn, i))
@@ -132,10 +135,13 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
             sudoku[blankRow][blankColumn] = i;
 
             // Send application data to place number
-            nmh.idFrom = MSG_FROM_SDKU_SOLVE;
-            nmh.code = SDKU_NUMBER_PUT;
-            nmh.hwndFrom = hWnd;
-            SendMessage(hWnd, WM_NOTIFY, i, (LPARAM)&nmh);
+            sudokuData.row = blankRow;
+            sudokuData.column = blankColumn;
+            sudokuData.number = i;
+            sudokuData.nmh.idFrom = MSG_FROM_SDKU_SOLVE;
+            sudokuData.nmh.hwndFrom = hWnd;
+            sudokuData.action = SDKU_NUMBER_PUT;
+            SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
 
             // Recursive backtracking
             if (solveSudoku(hWnd, sudoku))
@@ -144,50 +150,16 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
             }
             else
             {
-                // backtrack
+                // backtrack (might need this to be NULL)
                 sudoku[blankRow][blankColumn] = 0;
 
                 // Send application data to remove number
-                nmh.idFrom = MSG_FROM_SDKU_SOLVE;
-                nmh.code = SDKU_NUMBER_RM;
-                nmh.hwndFrom = hWnd;
-                SendMessage(hWnd, WM_NOTIFY, i, (LPARAM)&nmh);
+                sudokuData.action = SDKU_NUMBER_RM;
+                sudokuData.number = 0;
+                SendMessage(hWnd, WM_NOTIFY, NULL, &sudokuData);
             }
         }
     }
 
     return false;
 }
-
-/*
-*   Calls driver 'solveSudoku' function
-*
-*   Solution is printed or else a message shows telling there is no solution
-
-int main(void)
-{
-    int sudoku[9][9] = {
-        {0, 0, 8, 2, 0, 0, 0, 0, 0},
-        {0, 1, 2, 0, 0, 5, 8, 0, 0},
-        {4, 0, 0, 3, 0, 0, 0, 1, 0},
-        {7, 0, 0, 1, 0, 0, 0, 5, 0},
-        {0, 6, 0, 0, 7, 0, 1, 0, 3},
-        {0, 0, 0, 5, 0, 0, 0, 0, 6},
-        {3, 0, 0, 0, 0, 0, 0, 4, 0},
-        {0, 9, 0, 0, 0, 1, 0, 0, 0},
-        {0, 0, 0, 0, 8, 0, 7, 0, 0}
-    };
-
-    if (solveSudoku(sudoku))
-    {
-        printf("Here is the solution: \n");
-        printSoln(sudoku);
-    }
-    else
-    {
-        printf("This puzzle cannot be solved!\n");
-    }
-
-    return 0;
-}
-*/

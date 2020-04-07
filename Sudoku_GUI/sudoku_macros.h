@@ -15,5 +15,13 @@
 #define SDKU_NUMBER_PUT				94
 #define SDKU_NUMBER_RM				95
 
+typedef struct {
+	NMHDR nmh;
+	UINT row;
+	UINT column;
+	UINT action;
+	UINT number;
+} Sudoku_Append_t;
+
 
 #endif // !SUDOKU_MACRO_HEADER

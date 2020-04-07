@@ -1,2 +1,5 @@
-﻿  Sudoku_solve.c
+﻿  Sudoku_GUI.c
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_GUI.c(24,75): warning C4028: formal parameter 3 different from declaration
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_GUI.c(251,53): warning C4047: 'function': 'int' differs in levels of indirection from 'HMENU'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_GUI.c(251,53): warning C4024: 'GetSysColor': different types for formal and actual parameter 1
   Sudoku_GUI.vcxproj -> C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Debug\Sudoku_GUI.exe
