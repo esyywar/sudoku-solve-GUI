@@ -1,5 +1,10 @@
-﻿  Sudoku_GUI.c
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_GUI.c(24,75): warning C4028: formal parameter 3 different from declaration
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_GUI.c(251,53): warning C4047: 'function': 'int' differs in levels of indirection from 'HMENU'
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_GUI.c(251,53): warning C4024: 'GetSysColor': different types for formal and actual parameter 1
+﻿  Sudoku_solve.c
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(153,46): warning C4047: 'function': 'WPARAM' differs in levels of indirection from 'void *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(153,46): warning C4024: 'SendMessageW': different types for formal and actual parameter 3
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(153,77): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(153,77): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(170,50): warning C4047: 'function': 'WPARAM' differs in levels of indirection from 'void *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(170,50): warning C4024: 'SendMessageW': different types for formal and actual parameter 3
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(170,81): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(170,81): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
   Sudoku_GUI.vcxproj -> C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Debug\Sudoku_GUI.exe

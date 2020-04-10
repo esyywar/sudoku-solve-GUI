@@ -123,16 +123,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
 
             // Call function to solve in Sudoku_solve.c
-            solveSudoku(hWnd, sudoku);
+            if (solveSudoku(hWnd, sudoku))
+            {
+                MessageBox(hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
+            }
+            else
+            {
+                MessageBox(hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
+            }
 
         } break;
         case RESTART_BTN_CLICK:
         {
-            //SendMessage(hWnd, WM_NOTIFY, NULL, NULL);
+            static int identity = SUDOKU_CTRL_BASE_VALUE - 1;
+            identity++;
+            SetDlgItemInt(hWnd, identity, 5, FALSE);
+            
+
+            /*
+            for (int i = 0; i < 81; i++)
+            {
+                int row = i / 9;
+                int column = i % 9;
+                SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
+            }
+            */
         } break;
         case CLOSE_BTN_CLICK:
         {
-            btnResp = MessageBoxEx(hWnd, L"Are you sure you want to exit?", L"Exit", MB_YESNO | MB_ICONEXCLAMATION, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL));
+            btnResp = MessageBox(hWnd, L"Are you sure you want to exit?", L"Exit", MB_YESNO | MB_ICONEXCLAMATION);
 
             if (btnResp == IDYES)
             {
@@ -151,14 +170,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
     case WM_NOTIFY:
     {
-        printf("called!\n");
+        Sudoku_Append_t solveData = *((Sudoku_Append_t*)lParam);
+        int row = solveData.row;
+        int column = solveData.column;
+        int boxAddr = SUDOKU_CTRL_BASE_VALUE + (row * 9) + column;
 
-        Sudoku_Append_t test = *((Sudoku_Append_t*)lParam);
-        int testNum = test.action;
-        printf("%i\n", testNum);
-
-        //int test = (Sudoku_Append_t*)lParam->nmh.idFrom;
-        //TODO
+        if (solveData.action == SDKU_NUMBER_PUT)
+        {
+            int numPlace = solveData.number;
+            SetDlgItemInt(hWnd, boxAddr, numPlace, FALSE);
+        }
+        else if (solveData.action == SDKU_NUMBER_RM)
+        {
+            SetDlgItemInt(hWnd, boxAddr, NULL, FALSE);
+        }
     } break;
     case WM_CREATE:
     {
@@ -223,7 +248,7 @@ void AddControls(HWND hWnd)
         int xStart = 55 + ((i % 9) * 40);
         int yStart = 100 + ((i / 9) * 40);
 
-        grid[i] = CreateWindowExW(0, L"EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_CENTER | ES_NUMBER | WS_BORDER, xStart, yStart, 40, 40, hWnd, (HMENU)(i + 1), NULL, NULL);
+        grid[i] = CreateWindowExW(0, L"EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_CENTER | ES_NUMBER | WS_BORDER, xStart, yStart, 40, 40, hWnd, (HMENU)(i + SUDOKU_CTRL_BASE_VALUE), NULL, NULL);
         ShowWindow(grid[i], 1);
         UpdateWindow(grid[i]);
     }

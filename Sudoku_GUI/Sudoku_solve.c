@@ -1,6 +1,15 @@
 #include "framework.h"
 #include "sudoku_macros.h"
 
+void delay(int milli_seconds)
+{
+    // Storing start time 
+    clock_t start_time = clock();
+
+    // looping till required time is not achieved 
+    while (clock() < start_time + milli_seconds);
+}
+
 /*
 *   Print out the sudoku grid.
 *   This function is called only after puzzle is solved.
@@ -134,7 +143,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
         {
             sudoku[blankRow][blankColumn] = i;
 
-            // Send application data to place number
+            //Send application data to place number
             sudokuData.row = blankRow;
             sudokuData.column = blankColumn;
             sudokuData.number = i;
@@ -142,6 +151,9 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
             sudokuData.nmh.hwndFrom = hWnd;
             sudokuData.action = SDKU_NUMBER_PUT;
             SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
+            
+
+            //SetDlgItemInt(hWnd, SUDOKU_CTRL_BASE_VALUE + (blankRow * 9) + blankColumn, i, FALSE);
 
             // Recursive backtracking
             if (solveSudoku(hWnd, sudoku))
@@ -155,8 +167,8 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
 
                 // Send application data to remove number
                 sudokuData.action = SDKU_NUMBER_RM;
-                sudokuData.number = 0;
-                SendMessage(hWnd, WM_NOTIFY, NULL, &sudokuData);
+                SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
+                //SetDlgItemInt(hWnd, SUDOKU_CTRL_BASE_VALUE + (blankRow * 9) + blankColumn, NULL, FALSE);
             }
         }
     }
