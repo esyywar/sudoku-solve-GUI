@@ -14,8 +14,6 @@ WCHAR szWindowClass[MAX_LOADSTRING];        // the main window class name
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-HWND gridFrame;
-
 void AddControls();
 void paintWindow();
 
@@ -123,21 +121,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
 
             // Call function to solve in Sudoku_solve.c
-            if (solveSudoku(hWnd, sudoku))
-            {
-                MessageBox(hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
-            }
-            else
-            {
-                MessageBox(hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
-            }
-
+            sudokuSolveDriver(hWnd, sudoku);
         } break;
         case RESTART_BTN_CLICK:
         {
-            static int identity = SUDOKU_CTRL_BASE_VALUE - 1;
-            identity++;
-            SetDlgItemInt(hWnd, identity, 5, FALSE);
+            
+            PMYDATA myTest;
+
+            myTest = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MYDATA));
+
+            myTest->val1 = 4;
+            myTest->val2 = 10;
+            myTest->hWnd = hWnd;
+
+            DWORD solverThreadID;
+            HANDLE solveThread = CreateThread(NULL, 0, test, myTest, 0, &solverThreadID);
+
+            if (solveThread == NULL)
+            {
+                MessageBox(hWnd, L"FAILED THREAD", L"ERROR", MB_ICONERROR);
+            }
             
 
             /*
@@ -148,6 +151,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
             }
             */
+
         } break;
         case CLOSE_BTN_CLICK:
         {
@@ -184,6 +188,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             SetDlgItemInt(hWnd, boxAddr, NULL, FALSE);
         }
+
+        UpdateWindow(hWnd);
+        RedrawWindow(hWnd, NULL, NULL, RDW_UPDATENOW);
     } break;
     case WM_CREATE:
     {
@@ -230,7 +237,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 //Adding sudoku grid controls
 void AddControls(HWND hWnd)
 {
-    HWND title, solveBtn, restartBtn, closeBtn, grid[81];
+    HWND title, solveBtn, restartBtn, closeBtn, gridFrame, grid[81];
 
     // Title of window as static control
     title = CreateWindowEx(0, L"STATIC", L"SUDOKU SOLVER", WS_CHILD | WS_VISIBLE | ES_CENTER, 85, 30, 300, 40, hWnd, NULL, NULL, NULL);

@@ -142,6 +142,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
         if (isValid(sudoku, blankRow, blankColumn, i))
         {
             sudoku[blankRow][blankColumn] = i;
+            delay(200);
 
             //Send application data to place number
             sudokuData.row = blankRow;
@@ -174,4 +175,30 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
     }
 
     return false;
+}
+
+void sudokuSolveDriver(HWND hWnd, int sudoku[9][9])
+{
+    // TODO validation function for sudoku
+
+    if (solveSudoku(hWnd, sudoku))
+    {
+        MessageBox(hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
+    }
+    else
+    {
+        MessageBox(hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
+    }
+}
+
+DWORD WINAPI test(LPVOID lpParam)
+{
+    PMYDATA myTest = (PMYDATA)(lpParam);
+
+    int localInt = myTest->val1;
+    int localInt2 = myTest->val2;
+    //HWND parent = myTest->hWnd;
+
+    MessageBox(myTest->hWnd, L"TESTWINDOW", L"HOOFLAH", MB_OK);
+    //printf("Good day %i, %i\n", myTest->val1, myTest->val2);
 }

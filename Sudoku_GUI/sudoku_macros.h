@@ -15,6 +15,13 @@
 #define SDKU_NUMBER_PUT				94
 #define SDKU_NUMBER_RM				95
 
+/**************** STRUCTS *********************/
+
+typedef struct {
+	HWND hWnd;
+	int sudoku[9][9];
+} SudokuData, *pSodokuData;
+
 typedef struct {
 	NMHDR nmh;
 	UINT row;
@@ -23,5 +30,10 @@ typedef struct {
 	UINT number;
 } Sudoku_Append_t;
 
+typedef struct {
+	int val1;
+	int val2;
+	HWND hWnd;
+} MYDATA, *PMYDATA;
 
 #endif // !SUDOKU_MACRO_HEADER
