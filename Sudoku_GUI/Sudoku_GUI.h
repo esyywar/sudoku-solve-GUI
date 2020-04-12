@@ -9,12 +9,10 @@
 
 /****************************** SUDOKU SOLVE FUNCTIONS ******************************************/
 
-DWORD WINAPI test(LPVOID lpParam);
-
 /*
 * Void driver function to call for solving sudoku
 */
-void sudokuSolveDriver(HWND hWnd, int sudoku[9][9]);
+DWORD WINAPI sudokuSolveDriver(LPVOID lpParam);
 
 /*
 * Print the full sudoku as it is
@@ -90,6 +88,7 @@ bool findBlank(int sudoku[9][9], int* pRow, int* pColumn);
 * Inputs:   uint8_t sudoku[9][9] - sudoku grid
 */
 bool solveSudoku(HWND hWnd, int sudoku[9][9]);
+
 
 #endif
 

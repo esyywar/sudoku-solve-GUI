@@ -142,7 +142,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
         if (isValid(sudoku, blankRow, blankColumn, i))
         {
             sudoku[blankRow][blankColumn] = i;
-            delay(200);
+            delay(5);
 
             //Send application data to place number
             sudokuData.row = blankRow;
@@ -152,7 +152,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
             sudokuData.nmh.hwndFrom = hWnd;
             sudokuData.action = SDKU_NUMBER_PUT;
             SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
-            
+
 
             //SetDlgItemInt(hWnd, SUDOKU_CTRL_BASE_VALUE + (blankRow * 9) + blankColumn, i, FALSE);
 
@@ -177,28 +177,34 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
     return false;
 }
 
-void sudokuSolveDriver(HWND hWnd, int sudoku[9][9])
-{
-    // TODO validation function for sudoku
 
-    if (solveSudoku(hWnd, sudoku))
+DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
+{
+    pSudokuData inputSudoku = (pSudokuData)(lpParam);
+
+    // Unpack data into 2D array
+    int sudoku[9][9];
+
+    for (int i = 0; i < 81; i++)
     {
-        MessageBox(hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
+        uint8_t row = i / 9;
+        uint8_t column = i % 9;
+        sudoku[row][column] = inputSudoku->sudoku[i];
+    }
+
+    //TODO Validate sudoku and set all squares !(1 - 9) as 0
+
+    if (solveSudoku(inputSudoku->hWnd, sudoku))
+    {
+        MessageBox(inputSudoku->hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
     }
     else
     {
-        MessageBox(hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
+        MessageBox(inputSudoku->hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
     }
-}
 
-DWORD WINAPI test(LPVOID lpParam)
-{
-    PMYDATA myTest = (PMYDATA)(lpParam);
+    int test1 = GetDlgItemInt(inputSudoku->hWnd, (SUDOKU_CTRL_BASE_VALUE + 78), NULL, FALSE);
+    int test2 = GetDlgItemInt(inputSudoku->hWnd, (SUDOKU_CTRL_BASE_VALUE + 78), NULL, FALSE);
 
-    int localInt = myTest->val1;
-    int localInt2 = myTest->val2;
-    //HWND parent = myTest->hWnd;
-
-    MessageBox(myTest->hWnd, L"TESTWINDOW", L"HOOFLAH", MB_OK);
-    //printf("Good day %i, %i\n", myTest->val1, myTest->val2);
+    printf("%i %i\n", test1, test2);
 }

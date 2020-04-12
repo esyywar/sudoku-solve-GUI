@@ -19,8 +19,8 @@
 
 typedef struct {
 	HWND hWnd;
-	int sudoku[9][9];
-} SudokuData, *pSodokuData;
+	int *sudoku;
+} SudokuData, *pSudokuData;
 
 typedef struct {
 	NMHDR nmh;

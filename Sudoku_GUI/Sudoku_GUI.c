@@ -14,6 +14,8 @@ WCHAR szWindowClass[MAX_LOADSTRING];        // the main window class name
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+
+// Functions to render GUI
 void AddControls();
 void paintWindow();
 
@@ -109,49 +111,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } break;
         case SOLVE_BTN_CLICK:
         {
-            int sudoku[9][9];
-            BOOL didGet = FALSE;
+            int userSudoku[81];
 
+            pSudokuData sudokuData;
+            DWORD solverThreadID;
+            sudokuData = (pSudokuData)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(SudokuData));
+
+            BOOL didGet = FALSE;
+            
             // Get all values in grid which will be passed to solving function
             for (int i = 0; i < 81; i++)
             {
-                int row = i / 9;
-                int column = i % 9;
-                sudoku[row][column] = GetDlgItemInt(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), &didGet, FALSE);
+                userSudoku[i] = GetDlgItemInt(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), &didGet, FALSE);
             }
 
-            // Call function to solve in Sudoku_solve.c
-            sudokuSolveDriver(hWnd, sudoku);
+            // Preparing data to send in new thread
+            sudokuData->hWnd = hWnd;
+            sudokuData->sudoku = userSudoku;
+
+            // Run function to solve sudoku in new thread
+            HANDLE sudokuSolveThread = CreateThread(NULL, 0, sudokuSolveDriver, sudokuData, 0, &solverThreadID);
         } break;
         case RESTART_BTN_CLICK:
-        {
-            
-            PMYDATA myTest;
-
-            myTest = (PMYDATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(MYDATA));
-
-            myTest->val1 = 4;
-            myTest->val2 = 10;
-            myTest->hWnd = hWnd;
-
-            DWORD solverThreadID;
-            HANDLE solveThread = CreateThread(NULL, 0, test, myTest, 0, &solverThreadID);
-
-            if (solveThread == NULL)
-            {
-                MessageBox(hWnd, L"FAILED THREAD", L"ERROR", MB_ICONERROR);
-            }
-            
-
-            /*
+        {        
             for (int i = 0; i < 81; i++)
             {
                 int row = i / 9;
                 int column = i % 9;
                 SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
             }
-            */
-
         } break;
         case CLOSE_BTN_CLICK:
         {
@@ -255,7 +243,7 @@ void AddControls(HWND hWnd)
         int xStart = 55 + ((i % 9) * 40);
         int yStart = 100 + ((i / 9) * 40);
 
-        grid[i] = CreateWindowExW(0, L"EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_CENTER | ES_NUMBER | WS_BORDER, xStart, yStart, 40, 40, hWnd, (HMENU)(i + SUDOKU_CTRL_BASE_VALUE), NULL, NULL);
+        grid[i] = CreateWindowExW(0, L"EDIT", 0, WS_CHILD | WS_VISIBLE | ES_CENTER | ES_NUMBER | WS_BORDER, xStart, yStart, 40, 40, hWnd, (HMENU)(i + SUDOKU_CTRL_BASE_VALUE), NULL, NULL);
         ShowWindow(grid[i], 1);
         UpdateWindow(grid[i]);
     }
