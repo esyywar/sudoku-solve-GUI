@@ -1,11 +1,10 @@
 ﻿  Sudoku_solve.c
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(154,46): warning C4047: 'function': 'WPARAM' differs in levels of indirection from 'void *'
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(154,46): warning C4024: 'SendMessageW': different types for formal and actual parameter 3
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(154,77): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(154,77): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(157,46): warning C4047: 'function': 'WPARAM' differs in levels of indirection from 'void *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(157,46): warning C4024: 'SendMessageW': different types for formal and actual parameter 3
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(157,77): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(157,77): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
 C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(171,50): warning C4047: 'function': 'WPARAM' differs in levels of indirection from 'void *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(171,50): warning C4024: 'SendMessageW': different types for formal and actual parameter 3
 C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(171,81): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(171,81): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
-C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Sudoku_GUI\Sudoku_solve.c(208): warning C4716: 'sudokuSolveDriver': must return a value
   Sudoku_GUI.vcxproj -> C:\Users\rahul\Desktop\Dev_Projects\Applications\Sudoku_GUI\Debug\Sudoku_GUI.exe

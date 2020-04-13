@@ -120,12 +120,15 @@ bool findBlank(int sudoku[9][9], int* pRow, int* pColumn)
 *
 *   Makes recursive calls using backtracking algorithm to solve
 */
-bool solveSudoku(HWND hWnd, int sudoku[9][9])
+bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
 {
     // Variables to send application data
     Sudoku_Append_t sudokuData;
 
     int blankRow, blankColumn;
+
+    // Delay according to speed setting
+    delay(30 * delayMultiplier);
 
     // Search for unsolved box in sudoku
     bool isSolved = findBlank(sudoku, &blankRow, &blankColumn);
@@ -153,11 +156,8 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
             sudokuData.action = SDKU_NUMBER_PUT;
             SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
 
-
-            //SetDlgItemInt(hWnd, SUDOKU_CTRL_BASE_VALUE + (blankRow * 9) + blankColumn, i, FALSE);
-
             // Recursive backtracking
-            if (solveSudoku(hWnd, sudoku))
+            if (solveSudoku(hWnd, sudoku, delayMultiplier))
             {
                 return true;
             }
@@ -169,7 +169,6 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
                 // Send application data to remove number
                 sudokuData.action = SDKU_NUMBER_RM;
                 SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
-                //SetDlgItemInt(hWnd, SUDOKU_CTRL_BASE_VALUE + (blankRow * 9) + blankColumn, NULL, FALSE);
             }
         }
     }
@@ -178,33 +177,18 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9])
 }
 
 
-DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
+void sudokuValidate(int sudoku[9][9])
 {
-    pSudokuData inputSudoku = (pSudokuData)(lpParam);
-
-    // Unpack data into 2D array
-    int sudoku[9][9];
-
-    for (int i = 0; i < 81; i++)
+    // Check that all numbers are correct
+    for (int i = 0; i < 9; i++)
     {
-        uint8_t row = i / 9;
-        uint8_t column = i % 9;
-        sudoku[row][column] = inputSudoku->sudoku[i];
+        for (int j = 0; j < 9; j++)
+        {
+            if (sudoku[i][j] > 9 || sudoku[i][j] < 1)
+            {
+                sudoku[i][j] = 0;
+            }
+        }
     }
 
-    //TODO Validate sudoku and set all squares !(1 - 9) as 0
-
-    if (solveSudoku(inputSudoku->hWnd, sudoku))
-    {
-        MessageBox(inputSudoku->hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
-    }
-    else
-    {
-        MessageBox(inputSudoku->hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
-    }
-
-    int test1 = GetDlgItemInt(inputSudoku->hWnd, (SUDOKU_CTRL_BASE_VALUE + 78), NULL, FALSE);
-    int test2 = GetDlgItemInt(inputSudoku->hWnd, (SUDOKU_CTRL_BASE_VALUE + 78), NULL, FALSE);
-
-    printf("%i %i\n", test1, test2);
 }
