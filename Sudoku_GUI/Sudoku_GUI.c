@@ -14,8 +14,8 @@ WCHAR szWindowClass[MAX_LOADSTRING];        // the main window class name
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-// Window for speed bar
-HWND speedBar;
+// Control window handles
+HWND title, subTitle, speedBar, solveBtn, restartBtn, closeBtn, gridFrame, grid[81];
 
 // Functions to render GUI
 void addControls();
@@ -54,7 +54,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     wcex.hInstance = hInstance;
     wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SUDOKUGUI));
     wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 2);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 6);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_SUDOKUGUI);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -114,10 +114,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // Parse the menu selections:
         switch (wp)
         {
-        case 1:
-        {
-
-        } break;
         case SOLVE_BTN_CLICK:
         {
             int userSudoku[81];
@@ -150,6 +146,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } break;
         case RESTART_BTN_CLICK:
         {        
+            if (sudokuSolveThread)
+            {
+                LPDWORD exitCode;
+                GetExitCodeThread(sudokuSolveThread, &exitCode);
+                TerminateThread(sudokuSolveThread, exitCode);
+                EnableWindow(solveBtn, true);
+            }
+            
+
             for (int i = 0; i < 81; i++)
             {
                 int row = i / 9;
@@ -184,23 +189,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
     case WM_NOTIFY:
     {
-        Sudoku_Append_t solveData = *((Sudoku_Append_t*)lParam);
-        int row = solveData.row;
-        int column = solveData.column;
-        int boxAddr = SUDOKU_CTRL_BASE_VALUE + (row * 9) + column;
-
-        if (solveData.action == SDKU_NUMBER_PUT)
+        switch (wParam)
         {
-            int numPlace = solveData.number;
-            SetDlgItemInt(hWnd, boxAddr, numPlace, FALSE);
-        }
-        else if (solveData.action == SDKU_NUMBER_RM)
+        case MSG_FROM_SDKU_SOLVE:
         {
-            SetDlgItemInt(hWnd, boxAddr, NULL, FALSE);
-        }
+            // Disable solve button from sending again
+            EnableWindow(solveBtn, false);
 
-        UpdateWindow(hWnd);
-        RedrawWindow(hWnd, NULL, NULL, RDW_UPDATENOW);
+            Sudoku_Append_t solveData = *((Sudoku_Append_t*)lParam);
+            int row = solveData.row;
+            int column = solveData.column;
+            int boxAddr = SUDOKU_CTRL_BASE_VALUE + (row * 9) + column;
+
+            if (solveData.action == SDKU_NUMBER_PUT)
+            {
+                int numPlace = solveData.number;
+                SetDlgItemInt(hWnd, boxAddr, numPlace, FALSE);
+            }
+            else if (solveData.action == SDKU_NUMBER_RM)
+            {
+                SetDlgItemText(hWnd, boxAddr, NULL);
+            }
+
+            UpdateWindow(hWnd);
+            RedrawWindow(hWnd, NULL, NULL, RDW_UPDATENOW);
+        } break;
+        case MSG_FROM_SDKU_DRIVER:
+        {
+            if (((LPNMHDR)lParam)->code == SOLVE_THREAD_COMPLETE)
+            {
+                EnableWindow(solveBtn, true);
+            }
+        }
+        }
     } break;
     case WM_CREATE:
     {
@@ -250,8 +271,6 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void addControls(HWND hWnd)
 {
-    HWND title, subTitle, solveBtn, restartBtn, closeBtn, gridFrame, grid[81];
-
     // Title of window as static control
     title = CreateWindowEx(0, L"STATIC", L"SUDOKU SOLVER", WS_CHILD | WS_VISIBLE | ES_CENTER, 85, 25, 300, 40, hWnd, (HMENU)STATIC_TITLE_HEADER, NULL, NULL);
     ShowWindow(title, 1);
@@ -371,7 +390,16 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     // This function is also fixing some data corruption... Unsure why it occurs
     sudokuValidate(sudoku);
 
-    if (solveSudoku(inputSudoku->hWnd, sudoku, inputSudoku->speed))
+    bool isSolved = solveSudoku(inputSudoku->hWnd, sudoku, inputSudoku->speed);
+
+    NMHDR nmh;
+    nmh.hwndFrom = inputSudoku->hWnd;
+    nmh.idFrom = MSG_FROM_SDKU_DRIVER;
+    nmh.code = SOLVE_THREAD_COMPLETE;
+
+    SendMessage(nmh.hwndFrom, WM_NOTIFY, nmh.idFrom, &nmh);
+
+    if (isSolved)
     {
         MessageBox(inputSudoku->hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
     }

@@ -18,6 +18,9 @@
 #define SDKU_NUMBER_PUT				95
 #define SDKU_NUMBER_RM				96
 
+#define MSG_FROM_SDKU_DRIVER		97
+#define SOLVE_THREAD_COMPLETE		98
+
 
 /**************** STRUCTS *********************/
 

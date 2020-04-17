@@ -154,7 +154,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
             sudokuData.nmh.idFrom = MSG_FROM_SDKU_SOLVE;
             sudokuData.nmh.hwndFrom = hWnd;
             sudokuData.action = SDKU_NUMBER_PUT;
-            SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
+            SendMessage(hWnd, WM_NOTIFY, sudokuData.nmh.idFrom, (Sudoku_Append_t*)&sudokuData);
 
             // Recursive backtracking
             if (solveSudoku(hWnd, sudoku, delayMultiplier))
@@ -168,7 +168,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
 
                 // Send application data to remove number
                 sudokuData.action = SDKU_NUMBER_RM;
-                SendMessage(hWnd, WM_NOTIFY, NULL, (Sudoku_Append_t*)&sudokuData);
+                SendMessage(hWnd, WM_NOTIFY, sudokuData.nmh.idFrom, (Sudoku_Append_t*)&sudokuData);
             }
         }
     }
