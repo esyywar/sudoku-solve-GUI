@@ -9,17 +9,18 @@
 #define STATIC_TITLE_HEADER			87
 #define STATIC_SUBTITLE				88
 #define STATIC_GRID_FRAME			89
-#define SPEED_TRACKBAR				90
-#define SOLVE_BTN_CLICK				91
-#define RESTART_BTN_CLICK			92
-#define CLOSE_BTN_CLICK				93
+#define STATIC_CELL_FRAME			90
+#define SPEED_TRACKBAR				91
+#define SOLVE_BTN_CLICK				92
+#define RESTART_BTN_CLICK			93
+#define CLOSE_BTN_CLICK				94
 
-#define MSG_FROM_SDKU_SOLVE			94
-#define SDKU_NUMBER_PUT				95
-#define SDKU_NUMBER_RM				96
+#define MSG_FROM_SDKU_SOLVE			95
+#define SDKU_NUMBER_PUT				96
+#define SDKU_NUMBER_RM				97
 
-#define MSG_FROM_SDKU_DRIVER		97
-#define SOLVE_THREAD_COMPLETE		98
+#define MSG_FROM_SDKU_DRIVER		98
+#define SOLVE_THREAD_COMPLETE		99
 
 
 /**************** STRUCTS *********************/
