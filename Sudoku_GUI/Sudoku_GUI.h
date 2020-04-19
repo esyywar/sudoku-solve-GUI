@@ -81,6 +81,9 @@ bool isValid(int sudoku[9][9], int row, int column, int number);
 */
 bool findBlank(int sudoku[9][9], int* pRow, int* pColumn);
 
+bool isValidColumns(int sudoku[9][9]);
+bool isValidRows(int sudoku[9][9]);
+void sudokuValidate(int sudoku[9][9]);
 
 /*
 * Driver function to solve sudoku. Makes calls directly to isValid, findBlank and printSoln

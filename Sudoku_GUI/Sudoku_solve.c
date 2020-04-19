@@ -1,6 +1,17 @@
 #include "framework.h"
 #include "sudoku_macros.h"
 
+
+/****************************************** HELPER FUNCTIONS **************************************************/
+
+// Static sorting function
+static int ascendSort(const void* a, const void* b) {
+    return (*(int*)a - *(int*)b);
+}
+
+
+/************************************** SOLVER FUNCTIONS ******************************************************/
+
 void delay(int milli_seconds)
 {
     // Storing start time 
@@ -177,6 +188,86 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
 }
 
 
+/******************************************************* USER INPUT VALIDATION FUNCTIONS ************************************************/
+
+/*
+* Checks each column entered by user is valid by sudoku rules
+*/
+bool isValidColumns(int sudoku[9][9])
+{
+    int row[9], countNums = 0;
+
+    // For each row
+    for (int i = 0; i < 9; i++)
+    {
+        // For each column
+        for (int j = 0; j < 9; j++)
+        {
+            // Add to array if non-0
+            if (sudoku[j][i] > 0)
+            {
+                row[countNums] = sudoku[j][i];
+                countNums++;
+            }
+        }
+
+        // Check the row array for duplicates
+        qsort(row, (size_t)countNums, sizeof(int), ascendSort);
+        for (int n = 0; n < countNums - 1; n++)
+        {
+            if (row[n] == row[n + 1]) return false;
+        }
+
+        // Reset before checking next row
+        countNums = 0;
+    }
+
+    return true;
+}
+
+/*
+* Checks each row entered by user is valid by sudoku rules 
+*/
+bool isValidRows(int sudoku[9][9])
+{
+    int row[9], countNums = 0;
+
+    // For each row
+    for (int i = 0; i < 9; i++)
+    {
+        // For each column
+        for (int j = 0; j < 9; j++)
+        {
+            // Add to array if non-0
+            if (sudoku[i][j] > 0)
+            {
+                row[countNums] = sudoku[i][j];
+                countNums++;
+            }
+        }
+
+        // Check the row array for duplicates
+        qsort(row, (size_t)countNums, sizeof(int), ascendSort);
+        for (int n = 0; n < countNums - 1; n++)
+        {
+            if (row[n] == row[n + 1]) return false;
+        }
+        
+        // Reset before checking next row
+        countNums = 0;
+    }
+
+    return true;
+}
+
+bool isCellsValid(int sudoku[9][9])
+{
+
+}
+
+/*
+* Validates that all numbers are 1 - 9 or else sets to 0
+*/
 void sudokuValidate(int sudoku[9][9])
 {
     // Check that all numbers are correct
@@ -186,9 +277,9 @@ void sudokuValidate(int sudoku[9][9])
         {
             if (sudoku[i][j] > 9 || sudoku[i][j] < 1)
             {
+                // TODO send message here to empty cell!
                 sudoku[i][j] = 0;
             }
         }
     }
-
 }

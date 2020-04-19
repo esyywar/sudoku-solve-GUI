@@ -136,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             sudokuData->sudoku = userSudoku;
 
             // Run function to solve sudoku in new thread
-            sudokuSolveThread = CreateThread(NULL, 0, sudokuSolveDriver, sudokuData, 0, &solverThreadID);
+            sudokuSolveThread = CreateThread(NULL, (size_t)10, sudokuSolveDriver, sudokuData, 0, &solverThreadID);
 
             if (sudokuSolveThread == NULL)
             {
@@ -282,10 +282,9 @@ void addControls(HWND hWnd)
     UpdateWindow(title);
 
     // Creating a static control to act as frame for the sudoku
-    /*
-    gridFrame = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_THICKFRAME, 35, 95, 410, 410, hWnd, (HMENU)STATIC_GRID_FRAME, NULL, NULL);
+    gridFrame = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_THICKFRAME, 35, 95, 415, 415, hWnd, (HMENU)STATIC_GRID_FRAME, NULL, NULL);
     ShowWindow(gridFrame, 1);
-    UpdateWindow(gridFrame);*/
+    UpdateWindow(gridFrame);
 
     // Create 3x3 grid cells
     int xFrame, yFrame, framePitch = 135;
@@ -398,21 +397,9 @@ void addFonts(HWND hWnd)
     ReleaseDC(NULL, hdc);
 }
 
-
-void paintWindow()
-{
-    DWORD oldColour;
-
-    oldColour = GetSysColor((HMENU)STATIC_GRID_FRAME);
-
-    int purple = RGB(0x80, 0x00, 0x80);  // dark purple
-    int element = STATIC_GRID_FRAME;
-
-    bool try = SetSysColors(1, &element, &purple);
-    printf(try ? "true" : "false");
-}
-
-
+/*
+* Driver function to solve sudoku - processed in new thread when 'Solve' clicked 
+*/
 DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
 {
     pSudokuData inputSudoku = (pSudokuData)(lpParam);
@@ -428,9 +415,11 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     }
 
     // Validate sudoku and set all squares 0 for blank, or 1 - 9
-    // This function is also fixing some data corruption... Unsure why it occurs
     sudokuValidate(sudoku);
 
+    // Check rows, columns, cells for validity TODO
+
+    // Calling to recursive backtracking solver
     bool isSolved = solveSudoku(inputSudoku->hWnd, sudoku, inputSudoku->speed);
 
     NMHDR nmh;
@@ -448,4 +437,18 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     {
         MessageBox(inputSudoku->hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
     }
+}
+
+
+void paintWindow()
+{
+    DWORD oldColour;
+
+    oldColour = GetSysColor((HMENU)STATIC_GRID_FRAME);
+
+    int purple = RGB(0x80, 0x00, 0x80);  // dark purple
+    int element = STATIC_GRID_FRAME;
+
+    bool try = SetSysColors(1, &element, &purple);
+    printf(try ? "true" : "false");
 }
