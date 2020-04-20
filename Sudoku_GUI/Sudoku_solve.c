@@ -138,8 +138,8 @@ void valuesCheck(HWND hWnd, int sudoku[9][9])
                 sudoku[i][j] = 0;
 
                 // Send message to main WNDPROC to remove value on GUI
-                sudokuData.column = i;
-                sudokuData.row = j;
+                sudokuData.row = i;
+                sudokuData.column = j;
                 sudokuData.nmh.idFrom = MSG_FROM_SDKU_SOLVE;
                 sudokuData.nmh.hwndFrom = hWnd;
                 sudokuData.action = SDKU_NUMBER_RM;
@@ -279,7 +279,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
     int blankRow, blankColumn;
 
     // Delay according to speed setting
-    //delay(30 * delayMultiplier);
+    delay(30 * delayMultiplier);
 
     // Search for unsolved box in sudoku
     bool isSolved = findBlank(sudoku, &blankRow, &blankColumn);

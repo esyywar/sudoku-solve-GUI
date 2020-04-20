@@ -15,7 +15,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 // Control window handles
-HWND title, subTitle, speedBar, solveBtn, restartBtn, closeBtn, gridFrame, cellFrame[9], grid[81];
+HWND title, subTitle, speedBar, solveBtn, restartBtn, closeBtn, gridFrame, cellFrame[9], *grid;
 
 // Functions to render GUI
 void addControls();
@@ -223,7 +223,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         addControls(hWnd);
         addFonts(hWnd);
-        paintWindow(hWnd);
     } break;
     case WM_PAINT:
         {
@@ -295,6 +294,7 @@ void addControls(HWND hWnd)
     }
 
     // Creating 9x9 edit controls to act as sudoku boxes
+    grid = (HWND*)calloc(81, sizeof(HWND));
     int xCell, yCell, xOffset = 45, yOffset = 105, boxPitch = 42, spacing = boxPitch + 1, offset = 2;
     for (int i = 0; i < 81; i++)
     {
@@ -416,7 +416,7 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     nmh.idFrom = MSG_FROM_SDKU_DRIVER;
     nmh.code = SOLVE_THREAD_COMPLETE;
 
-    // Validate sudoku and set all squares 0 for blank, or 1 - 9
+    // Validate sudoku and set all squares 0 for blank, or 1 - 9 (TODO "MEMORY CORRUPTION IS HERE!")
     valuesCheck(inputSudoku->hWnd, sudoku);
 
     // Check rows, columns, cells for validity
@@ -438,7 +438,7 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     // Calling to recursive backtracking solver
     bool isSolved = solveSudoku(inputSudoku->hWnd, sudoku, inputSudoku->speed);
 
-    // Send message that solve function has completed
+    // Send message that solve function has completed (TODO send message of completion status and let main window display messagebox so that thread can be exited here)
     SendMessage(nmh.hwndFrom, WM_NOTIFY, nmh.idFrom, &nmh);
 
     if (isSolved)
