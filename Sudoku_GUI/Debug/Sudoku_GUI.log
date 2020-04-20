@@ -1,8 +1,30 @@
-﻿  Sudoku_solve.c
+﻿  Sudoku_GUI.c
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(29,75): warning C4028: formal parameter 3 different from declaration
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(131,71): warning C4047: 'function': 'WPARAM' differs in levels of indirection from 'void *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(131,71): warning C4024: 'SendMessageW': different types for formal and actual parameter 3
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(131,77): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'void *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(131,77): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(135,56): warning C4047: 'function': 'SIZE_T' differs in levels of indirection from 'void *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(135,56): warning C4024: 'CreateThread': different types for formal and actual parameter 2
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(148,63): warning C4047: 'function': 'LPDWORD' differs in levels of indirection from 'LPDWORD *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(148,63): warning C4024: 'GetExitCodeThread': different types for formal and actual parameter 2
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(149,60): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'LPDWORD'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(149,60): warning C4024: 'TerminateThread': different types for formal and actual parameter 2
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(443,77): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'NMHDR *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(443,77): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(447,55): warning C4047: 'function': 'LPDWORD' differs in levels of indirection from 'LPDWORD *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(447,55): warning C4024: 'GetExitCodeThread': different types for formal and actual parameter 2
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(448,28): warning C4047: 'function': 'DWORD' differs in levels of indirection from 'LPDWORD'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(448,28): warning C4024: 'ExitThread': different types for formal and actual parameter 1
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(456,73): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'NMHDR *'
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(456,73): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
+  Sudoku_solve.c
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(146,98): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(146,98): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(307,94): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(307,94): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(321,98): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(321,98): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
+  Generating Code...
+C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_GUI.c(457): warning C4715: 'sudokuSolveDriver': not all control paths return a value
   Sudoku_GUI.vcxproj -> C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Debug\Sudoku_GUI.exe

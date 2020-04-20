@@ -174,11 +174,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         } break;
         case IDM_ABOUT:
+        {
             DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-            break;
+        } break;
         case IDM_EXIT:
+        {
             DestroyWindow(hWnd);
-            break;
+        } break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
@@ -212,9 +214,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } break;
         case MSG_FROM_SDKU_DRIVER:
         {
-            if (((LPNMHDR)lParam)->code == SOLVE_THREAD_COMPLETE)
+            EnableWindow(solveBtn, true);
+
+            switch (((LPNMHDR)lParam)->code)
             {
-                EnableWindow(solveBtn, true);
+            case SOLVE_INPUT_INVALID:
+            {
+                MessageBox(hWnd, L"This puzzle does not meet sudku rules!", L"Puzzle Invalid", MB_OK | MB_ICONERROR);
+            } break;
+            case SOLVE_SUDOKU_SOLVED:
+            {
+                MessageBox(hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
+            } break;
+            case SOLVE_SUDOKU_NO_SOLN:
+            {
+                MessageBox(hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
+            }
             }
         }
         }
@@ -411,10 +426,9 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     }
 
     // Prepare notify message to send upon thread completion
-    NMHDR nmh;
-    nmh.hwndFrom = inputSudoku->hWnd;
-    nmh.idFrom = MSG_FROM_SDKU_DRIVER;
-    nmh.code = SOLVE_THREAD_COMPLETE;
+    NMHDR callback;
+    callback.hwndFrom = inputSudoku->hWnd;
+    callback.idFrom = MSG_FROM_SDKU_DRIVER;
 
     // Validate sudoku and set all squares 0 for blank, or 1 - 9 (TODO "MEMORY CORRUPTION IS HERE!")
     valuesCheck(inputSudoku->hWnd, sudoku);
@@ -425,9 +439,8 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     if (!validPuzzle)
     {
         // Send message that solve function has completed
-        SendMessage(nmh.hwndFrom, WM_NOTIFY, nmh.idFrom, &nmh);
-
-        MessageBox(inputSudoku->hWnd, L"This puzzle does not meet sudku rules!", L"Puzzle Invalid", MB_OK | MB_ICONERROR);
+        callback.code = SOLVE_INPUT_INVALID;
+        SendMessage(callback.hwndFrom, WM_NOTIFY, callback.idFrom, &callback);
 
         // Exit this thread
         LPDWORD ExitCode;
@@ -438,15 +451,7 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     // Calling to recursive backtracking solver
     bool isSolved = solveSudoku(inputSudoku->hWnd, sudoku, inputSudoku->speed);
 
-    // Send message that solve function has completed (TODO send message of completion status and let main window display messagebox so that thread can be exited here)
-    SendMessage(nmh.hwndFrom, WM_NOTIFY, nmh.idFrom, &nmh);
-
-    if (isSolved)
-    {
-        MessageBox(inputSudoku->hWnd, L"Puzzle has been solved!", L"Solved", MB_OK | MB_ICONINFORMATION);
-    }
-    else
-    {
-        MessageBox(inputSudoku->hWnd, L"This puzzle has no solution!", L"No Solution", MB_OK | MB_ICONERROR);
-    }
+    // Send message that indicates if puzzle has been solved
+    callback.code = (isSolved) ? SOLVE_SUDOKU_SOLVED : SOLVE_SUDOKU_NO_SOLN;
+    SendMessage(callback.hwndFrom, WM_NOTIFY, callback.idFrom, &callback);
 }

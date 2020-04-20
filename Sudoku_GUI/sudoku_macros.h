@@ -5,6 +5,9 @@
 
 #define MAX_LOADSTRING				100
 
+/*
+* HMENU IDs for static, editable and button controls
+*/
 #define SUDOKU_CTRL_BASE_VALUE		1
 #define STATIC_TITLE_HEADER			87
 #define STATIC_SUBTITLE				88
@@ -15,12 +18,20 @@
 #define RESTART_BTN_CLICK			93
 #define CLOSE_BTN_CLICK				94
 
+/*
+* Messages from sudoku solver to place and remove numbers from GUI
+*/
 #define MSG_FROM_SDKU_SOLVE			95
 #define SDKU_NUMBER_PUT				96
 #define SDKU_NUMBER_RM				97
 
+/*
+* Messages sent from sudoku solver to main window procedure
+*/
 #define MSG_FROM_SDKU_DRIVER		98
-#define SOLVE_THREAD_COMPLETE		99
+#define SOLVE_INPUT_INVALID			99
+#define SOLVE_SUDOKU_SOLVED			100
+#define SOLVE_SUDOKU_NO_SOLN		101
 
 
 /**************** STRUCTS *********************/
