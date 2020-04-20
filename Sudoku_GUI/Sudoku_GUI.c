@@ -430,7 +430,7 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     callback.hwndFrom = inputSudoku->hWnd;
     callback.idFrom = MSG_FROM_SDKU_DRIVER;
 
-    // Validate sudoku and set all squares 0 for blank, or 1 - 9 (TODO "MEMORY CORRUPTION IS HERE!")
+    // Validate sudoku and set all squares 0 for blank, or 1 - 9
     valuesCheck(inputSudoku->hWnd, sudoku);
 
     // Check rows, columns, cells for validity
