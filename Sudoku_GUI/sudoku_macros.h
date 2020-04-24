@@ -41,9 +41,9 @@
 /*
 * Stored sudoku puzzles
 */
-#define SUDOKU_PUZZLE_1
-#define SUDOKU_PUZZLE_2
-#define SUDOKU_PUZZLE_3
+#define SUDOKU_PUZZLE_1				
+#define SUDOKU_PUZZLE_2				{}
+#define SUDOKU_PUZZLE_3				{}
 
 
 /**************** STRUCTS *********************/

@@ -18,8 +18,16 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 HWND title, subTitle, speedBar, solveBtn, restartBtn, closeBtn, gridFrame, cellFrame[9], *grid;
 
 // Functions to render GUI
-void addControls();
-void addFonts();
+void addControls(HWND hWnd);
+void addFonts(HWND hWnd);
+
+// Helper function to clear sudoku board
+void clearSudokuBoard(HWND hWnd);
+
+// Three locally stored sudokus for user to load
+uint8_t localSDKU1[81] = {0, 0, 8, 4, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 9, 4, 0, 0, 4, 5, 0, 0, 0, 0, 2, 3, 0, 1, 0, 0, 6, 4, 0, 0, 0, 0, 0, 7, 2, 0, 8, 4, 0, 0, 0, 0, 0, 9, 7, 0, 0, 6, 0, 9, 6, 0, 0, 0, 0, 1, 5, 0, 0, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 7, 0, 0};
+uint8_t localSDKU2[81] = {0, 0, 0, 0, 2, 0, 6, 0, 9, 2, 6, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 2, 9, 0, 8, 3, 0, 1, 7, 0, 5, 4, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 2, 0, 0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 1, 3, 6, 0, 9, 0, 7, 0, 0, 0, 0};
+uint8_t localSDKU3[81] = {0, 0, 6, 0, 0, 0, 0, 0, 3, 8, 2, 0, 0, 9, 6, 0, 0, 0, 9, 3, 0, 4, 0, 0, 0, 1, 0, 7, 8, 0, 0, 1, 0, 0, 0, 0, 0, 9, 0, 0, 4, 0, 0, 3, 0, 0, 0, 0, 0, 7, 0, 0, 6, 2, 0, 1, 0, 0, 0, 2, 0, 4, 6, 0, 0, 0, 7, 3, 0, 0, 9, 1, 2, 0, 0, 0, 0, 0, 3, 0, 0};
 
 // Handle for solver thread
 HANDLE sudokuSolveThread;
@@ -151,13 +159,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 EnableWindow(speedBar, true);
             }
             
-
-            for (int i = 0; i < 81; i++)
-            {
-                int row = i / 9;
-                int column = i % 9;
-                SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
-            }
+            clearSudokuBoard(hWnd);
         } break;
         case CLOSE_BTN_CLICK:
         {
@@ -181,6 +183,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         case IDM_EXIT:
         {
             DestroyWindow(hWnd);
+        } break;
+        case ID_FILE_LOADSUDOKU:
+        {
+            /*
+            * Load one of 3 puzzles from memory onto board
+            */
+
+            if (sudokuSolveThread)
+            {
+                LPDWORD exitCode;
+                GetExitCodeThread(sudokuSolveThread, &exitCode);
+                TerminateThread(sudokuSolveThread, exitCode);
+                EnableWindow(solveBtn, true);
+                EnableWindow(speedBar, true);
+            }
+
+            clearSudokuBoard(hWnd);
+
+            uint8_t* pLoadedPuzzle;
+            static uint8_t puzzleSelect = 0;
+
+            puzzleSelect = puzzleSelect % 3;
+            switch (puzzleSelect)
+            {
+            case 0: pLoadedPuzzle = localSDKU1; break;
+            case 1: pLoadedPuzzle = localSDKU2; break;
+            case 2: pLoadedPuzzle = localSDKU3; break;
+            default: pLoadedPuzzle = localSDKU1;
+            }
+
+            for (int i = 0; i < 81; i++)
+            {
+                if (pLoadedPuzzle[i] != 0) SetDlgItemInt(hWnd, SUDOKU_CTRL_BASE_VALUE + i, pLoadedPuzzle[i], FALSE);
+            }
+
+            puzzleSelect++;
         } break;
         default:
             return DefWindowProc(hWnd, message, wParam, lParam);
@@ -443,6 +481,19 @@ void addFonts(HWND hWnd)
     }
    
     ReleaseDC(NULL, hdc);
+}
+
+/*
+* Clears all values on active sudoku board
+*/
+void clearSudokuBoard(HWND hWnd)
+{
+    for (int i = 0; i < 81; i++)
+    {
+        int row = i / 9;
+        int column = i % 9;
+        SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
+    }
 }
 
 /*
