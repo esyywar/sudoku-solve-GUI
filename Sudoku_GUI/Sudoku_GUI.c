@@ -262,9 +262,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HBRUSH myBrush = CreateSolidBrush(RGB(140, 153, 208));
             FillRect(hdc, &ps.rcPaint, myBrush);
 
-            /*
-            * Writing text to window
-            */
+            // Writing text to window
             RECT rectWnd;
             GetWindowRect(hWnd, &rectWnd);
             BitBlt(hdc, 0, 0, rectWnd.right - rectWnd.left, rectWnd.bottom, hdc_x, 0, 0, SRCCOPY);
@@ -273,12 +271,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HFONT hFont;
 
             // Write Title at top of window
-            lfHeight = -MulDiv(22, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+            lfHeight = -MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72);
             hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Showcard Gothic");
             SelectObject(hdc, hFont);
             SetTextColor(hdc, RGB(0, 0, 0));
             SetBkMode(hdc, TRANSPARENT);
-            TextOut(hdc, 140, 20, L"SUDOKU SOLVER", strlen("SUDOKU SOLVER"));
+            TextOut(hdc, 130, 20, L"SUDOKU SOLVER", strlen("SUDOKU SOLVER"));
 
             // Write subtitle under main title
             lfHeight = -MulDiv(14, GetDeviceCaps(hdc, LOGPIXELSY), 72);

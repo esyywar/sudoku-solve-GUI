@@ -154,6 +154,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source.cpp" />
     <ClCompile Include="Sudoku_GUI.c" />
     <ClCompile Include="Sudoku_solve.c" />
   </ItemGroup>
