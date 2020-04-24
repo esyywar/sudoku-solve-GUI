@@ -279,7 +279,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
     int blankRow, blankColumn;
 
     // Delay according to speed setting
-    delay(30 * delayMultiplier);
+    delay(20 * delayMultiplier);
 
     // Search for unsolved box in sudoku
     bool isSolved = findBlank(sudoku, &blankRow, &blankColumn);

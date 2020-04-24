@@ -63,7 +63,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     }
 
     // Create window
-    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 500, 750, NULL, NULL, hInstance, NULL);
+    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 540, 750, NULL, NULL, hInstance, NULL);
 
     if (!hWnd)
     {
@@ -148,6 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 GetExitCodeThread(sudokuSolveThread, &exitCode);
                 TerminateThread(sudokuSolveThread, exitCode);
                 EnableWindow(solveBtn, true);
+                EnableWindow(speedBar, true);
             }
             
 
@@ -194,6 +195,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Disable solve button from sending again
             EnableWindow(solveBtn, false);
 
+            // Speed cannot be adjusted till next run so disable this control
+            EnableWindow(speedBar, false);
+
             Sudoku_Append_t solveData = *((Sudoku_Append_t*)lParam);
             int row = solveData.row;
             int column = solveData.column;
@@ -214,7 +218,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } break;
         case MSG_FROM_SDKU_DRIVER:
         {
+            /*
+            *   Brief: Message from sudoku driver means puzzle has been processed
+            *
+            *   Possible solve results: invalid user data, puzzle solved, puzzle has no solution
+            */
+
+            // Enable frozen controls
             EnableWindow(solveBtn, true);
+            EnableWindow(speedBar, true);
 
             switch (((LPNMHDR)lParam)->code)
             {
@@ -243,7 +255,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
+            HDC hdc_x = CreateCompatibleDC(NULL);
+            // Add any drawing code that uses hdc here...
+
+            // Background colour for window
+            HBRUSH myBrush = CreateSolidBrush(RGB(140, 153, 208));
+            FillRect(hdc, &ps.rcPaint, myBrush);
+
+            /*
+            * Writing text to window
+            */
+            RECT rectWnd;
+            GetWindowRect(hWnd, &rectWnd);
+            BitBlt(hdc, 0, 0, rectWnd.right - rectWnd.left, rectWnd.bottom, hdc_x, 0, 0, SRCCOPY);
+
+            long lfHeight;
+            HFONT hFont;
+
+            // Write Title at top of window
+            lfHeight = -MulDiv(22, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+            hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Showcard Gothic");
+            SelectObject(hdc, hFont);
+            SetTextColor(hdc, RGB(0, 0, 0));
+            SetBkMode(hdc, TRANSPARENT);
+            TextOut(hdc, 140, 20, L"SUDOKU SOLVER", strlen("SUDOKU SOLVER"));
+
+            // Write subtitle under main title
+            lfHeight = -MulDiv(14, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+            hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, PROOF_QUALITY, 0, L"Calibri");
+            SelectObject(hdc, hFont);
+            TextOut(hdc, 130, 60, L"Backtracking algorithm visualizer", strlen("Backtracking algorithm visualizer"));
+
+            // Green colour "FAST" and red colour "SLOW"
+            lfHeight = -MulDiv(20, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+            hFont = CreateFont(lfHeight, 0, 0, 0, FW_SEMIBOLD, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Bahnschrift Condensed");
+            SelectObject(hdc, hFont);
+            SetTextColor(hdc, RGB(18, 105, 41));
+            SetBkMode(hdc, TRANSPARENT);
+            TextOut(hdc, 35, 535, L"FAST!", strlen("FAST!"));
+
+            SetTextColor(hdc, RGB(160, 0, 0));
+            TextOut(hdc, 412, 535, L"SLOW!", strlen("SLOW!"));
+
+            ReleaseDC(hWnd, hdc);
             EndPaint(hWnd, &ps);
         }
         break;
@@ -281,18 +335,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void addControls(HWND hWnd)
 {
-    // Title of window as static control
-    title = CreateWindowEx(0, L"STATIC", L"SUDOKU SOLVER", WS_CHILD | WS_VISIBLE | ES_CENTER, 85, 20, 300, 40, hWnd, (HMENU)STATIC_TITLE_HEADER, NULL, NULL);
-    ShowWindow(title, 1);
-    UpdateWindow(title);
-
-    // Subtitle of window
-    subTitle = CreateWindowEx(0, L"STATIC", L"Backtracking algorithm visualizer", WS_CHILD | WS_VISIBLE | ES_CENTER, 85, 60, 300, 20, hWnd, (HMENU)STATIC_SUBTITLE, NULL, NULL);
-    ShowWindow(title, 1);
-    UpdateWindow(title);
-
     // Creating a static control to act as frame for the sudoku
-    gridFrame = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_THICKFRAME, 35, 95, 415, 415, hWnd, (HMENU)STATIC_GRID_FRAME, NULL, NULL);
+    gridFrame = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_THICKFRAME, 55, 95, 415, 415, hWnd, (HMENU)STATIC_GRID_FRAME, NULL, NULL);
     ShowWindow(gridFrame, 1);
     UpdateWindow(gridFrame);
 
@@ -300,7 +344,7 @@ void addControls(HWND hWnd)
     int xFrame, yFrame, framePitch = 135;
     for (int i = 0; i < 9; i++)
     {
-        xFrame = 40 + ((i % 3) * framePitch);
+        xFrame = 60 + ((i % 3) * framePitch);
         yFrame = 100 + ((i / 3) * framePitch);
 
         cellFrame[i] = CreateWindowEx(WS_EX_CLIENTEDGE, L"STATIC", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER, xFrame, yFrame, framePitch, framePitch, hWnd, (HMENU)STATIC_CELL_FRAME, NULL, NULL);
@@ -310,20 +354,20 @@ void addControls(HWND hWnd)
 
     // Creating 9x9 edit controls to act as sudoku boxes
     grid = (HWND*)calloc(81, sizeof(HWND));
-    int xCell, yCell, xOffset = 45, yOffset = 105, boxPitch = 42, spacing = boxPitch + 1, offset = 2;
+    int xCell, yCell, xOffset = 65, yOffset = 105, boxPitch = 42, spacing = boxPitch + 1, offset = 2;
     for (int i = 0; i < 81; i++)
     {
         // space each 3x3 cell apart in x-dimension
         switch (i % 9)
         {
         case 0:
-            xOffset = 44;
+            xOffset = 64;
             break;
         case 3:
-            xOffset = 50;
+            xOffset = 70;
             break;
         case 6:
-            xOffset = 54;
+            xOffset = 74;
             break;
         }
 
@@ -350,23 +394,23 @@ void addControls(HWND hWnd)
     }
 
     // Create speed set slider (window handle created global)
-    speedBar = CreateWindowEx(0, TRACKBAR_CLASS, L"SPEED", WS_CHILD | WS_VISIBLE | TBS_HORZ | TBS_AUTOTICKS, 85, 535, 300, 40, hWnd, (HMENU)SPEED_TRACKBAR, NULL, NULL);
+    speedBar = CreateWindowEx(0, TRACKBAR_CLASS, L"SPEED", WS_CHILD | WS_VISIBLE | TBS_HORZ | TBS_AUTOTICKS, 105, 535, 300, 40, hWnd, (HMENU)SPEED_TRACKBAR, NULL, NULL);
     SendMessage(speedBar, TBM_SETRANGE, (WPARAM)TRUE, (LPARAM)MAKELONG(0, 10));
     ShowWindow(speedBar, 1);
     UpdateWindow(speedBar);
 
     // Solve button control
-    solveBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"SOLVE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 40, 605, 110, 40, hWnd, (HMENU)SOLVE_BTN_CLICK, NULL, NULL);
+    solveBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"SOLVE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 60, 605, 110, 40, hWnd, (HMENU)SOLVE_BTN_CLICK, NULL, NULL);
     ShowWindow(solveBtn, 1);
     UpdateWindow(solveBtn);
 
     // Restart button control
-    restartBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"RESTART", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 190, 605, 110, 40, hWnd, (HMENU)RESTART_BTN_CLICK, NULL, NULL);
+    restartBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"RESTART", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 210, 605, 110, 40, hWnd, (HMENU)RESTART_BTN_CLICK, NULL, NULL);
     ShowWindow(restartBtn, 1);
     UpdateWindow(restartBtn);
 
     // Close button control
-    closeBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"CLOSE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 340, 605, 110, 40, hWnd, (HMENU)CLOSE_BTN_CLICK, NULL, NULL);
+    closeBtn = CreateWindowExW(WS_EX_CLIENTEDGE, L"BUTTON", L"CLOSE", WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON | BS_CENTER, 360, 605, 110, 40, hWnd, (HMENU)CLOSE_BTN_CLICK, NULL, NULL);
     ShowWindow(closeBtn, 1);
     UpdateWindow(closeBtn);
 }
@@ -382,14 +426,9 @@ void addFonts(HWND hWnd)
     long lfHeight;
     hdc = GetDC(NULL);
 
-    // Create font for title
-    lfHeight = -MulDiv(20, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-    controlFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Showcard Gothic");
-    SendDlgItemMessage(hWnd, STATIC_TITLE_HEADER, WM_SETFONT, (WPARAM)controlFont, TRUE);
-
     // Create font for the number cells
-    lfHeight = -MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-    controlFont = CreateFont(lfHeight, 0, 0, 0, FW_SEMIBOLD, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Bahnschrift Semibold");
+    lfHeight = -MulDiv(20, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+    controlFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Calibri");
 
     for (int i = 0; i < 81; i++)
     {
