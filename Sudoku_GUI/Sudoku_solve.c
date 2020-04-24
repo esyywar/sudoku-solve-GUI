@@ -271,7 +271,7 @@ bool findBlank(int sudoku[9][9], int* pRow, int* pColumn)
 *
 *   Makes recursive calls using backtracking algorithm to solve
 */
-bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
+bool solveSudoku(HWND hWnd, HWND speedBar, int sudoku[9][9])
 {
     // Variables to send application data
     Sudoku_Append_t sudokuData;
@@ -279,7 +279,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
     int blankRow, blankColumn;
 
     // Delay according to speed setting
-    delay(20 * delayMultiplier);
+    delay(20 * SendMessage(speedBar, TBM_GETPOS, NULL, NULL));
 
     // Search for unsolved box in sudoku
     bool isSolved = findBlank(sudoku, &blankRow, &blankColumn);
@@ -307,7 +307,7 @@ bool solveSudoku(HWND hWnd, int sudoku[9][9], int delayMultiplier)
             SendMessage(hWnd, WM_NOTIFY, sudokuData.nmh.idFrom, (Sudoku_Append_t*)&sudokuData);
 
             // Recursive backtracking
-            if (solveSudoku(hWnd, sudoku, delayMultiplier))
+            if (solveSudoku(hWnd, speedBar, sudoku))
             {
                 return true;
             }

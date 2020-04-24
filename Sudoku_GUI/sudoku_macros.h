@@ -53,7 +53,7 @@
 */
 typedef struct {
 	HWND hWnd;
-	int speed;
+	HWND speedWnd;
 	int *sudoku;
 } SudokuData, *pSudokuData;
 

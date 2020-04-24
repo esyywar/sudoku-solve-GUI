@@ -45,13 +45,13 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sudoku_GUI.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sudoku_solve.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudoku_GUI.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

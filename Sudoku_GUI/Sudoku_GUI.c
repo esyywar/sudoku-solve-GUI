@@ -120,7 +120,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
         case SOLVE_BTN_CLICK:
         {
-            int userSudoku[81];
+            int *userSudoku = (int*)malloc(81 * sizeof(int));
 
             pSudokuData sudokuData;
             DWORD solverThreadID;
@@ -136,7 +136,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             // Preparing data to send in new thread
             sudokuData->hWnd = hWnd;
-            sudokuData->speed = SendMessage(speedBar, TBM_GETPOS, NULL, NULL);
+            sudokuData->speedWnd = speedBar;
             sudokuData->sudoku = userSudoku;
 
             // Run function to solve sudoku in new thread
@@ -156,7 +156,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 GetExitCodeThread(sudokuSolveThread, &exitCode);
                 TerminateThread(sudokuSolveThread, exitCode);
                 EnableWindow(solveBtn, true);
-                EnableWindow(speedBar, true);
             }
             
             clearSudokuBoard(hWnd);
@@ -233,9 +232,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Disable solve button from sending again
             EnableWindow(solveBtn, false);
 
-            // Speed cannot be adjusted till next run so disable this control
-            EnableWindow(speedBar, false);
-
             Sudoku_Append_t solveData = *((Sudoku_Append_t*)lParam);
             int row = solveData.row;
             int column = solveData.column;
@@ -264,7 +260,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             // Enable frozen controls
             EnableWindow(solveBtn, true);
-            EnableWindow(speedBar, true);
 
             switch (((LPNMHDR)lParam)->code)
             {
@@ -297,7 +292,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Add any drawing code that uses hdc here...
 
             // Background colour for window
-            HBRUSH myBrush = CreateSolidBrush(RGB(140, 153, 208));
+            HBRUSH myBrush = CreateSolidBrush(RGB(145, 171, 199));
             FillRect(hdc, &ps.rcPaint, myBrush);
 
             // Writing text to window
@@ -513,6 +508,9 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
         sudoku[row][column] = inputSudoku->sudoku[i];
     }
 
+    // Free memory allocated to input structure
+    free(inputSudoku->sudoku);
+
     // Prepare notify message to send upon thread completion
     NMHDR callback;
     callback.hwndFrom = inputSudoku->hWnd;
@@ -537,7 +535,7 @@ DWORD WINAPI sudokuSolveDriver(LPVOID lpParam)
     }
 
     // Calling to recursive backtracking solver
-    bool isSolved = solveSudoku(inputSudoku->hWnd, sudoku, inputSudoku->speed);
+    bool isSolved = solveSudoku(inputSudoku->hWnd, inputSudoku->speedWnd, sudoku);
 
     // Send message that indicates if puzzle has been solved
     callback.code = (isSolved) ? SOLVE_SUDOKU_SOLVED : SOLVE_SUDOKU_NO_SOLN;
