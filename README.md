@@ -1,6 +1,8 @@
 # sudoku-solve-GUI
 
-This application is a graphical user interface which solves sudoku puzzles using the backtracking algorithm. The executable application is found at 'Debug\Sudoku_GUI.exe'
+This application is a graphical user interface which solves sudoku puzzles using the backtracking algorithm. The executable application file is found at 'Debug\Sudoku_GUI.exe'
+
+<img src="images/sudoku_gui_screen.JPG" />
 
 This algorithm is made to solve puzzles with a finite number of solutions. The process of the backtracking algorithm is visualized in real-time by this GUI.
 
