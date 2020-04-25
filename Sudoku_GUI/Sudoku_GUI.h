@@ -7,6 +7,9 @@
 #define SUDOKU_HEADER
 
 
+
+
+
 /****************************** SUDOKU SOLVE FUNCTIONS ******************************************/
 
 // Solver thread function
@@ -21,6 +24,11 @@ void valuesCheck(HWND hWnd, int sudoku[9][9]);
 * Print the full sudoku as it is
 */
 void printSoln(int sudoku[9][9]);
+
+/*
+* Clears all values on active sudoku board
+*/
+void clearSudokuBoard(HWND hWnd);
 
 
 /*

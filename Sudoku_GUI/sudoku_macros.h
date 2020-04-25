@@ -34,16 +34,9 @@
 #define SOLVE_SUDOKU_NO_SOLN		101
 
 /*
-* Menu items
-*/
-#define LOAD_SUDOKU_MENU			102
-
-/*
 * Stored sudoku puzzles
 */
-#define SUDOKU_PUZZLE_1				
-#define SUDOKU_PUZZLE_2				{}
-#define SUDOKU_PUZZLE_3				{}
+#define TEST_COLOUR					200
 
 
 /**************** STRUCTS *********************/

@@ -21,13 +21,10 @@ HWND title, subTitle, speedBar, solveBtn, restartBtn, closeBtn, gridFrame, cellF
 void addControls(HWND hWnd);
 void addFonts(HWND hWnd);
 
-// Helper function to clear sudoku board
-void clearSudokuBoard(HWND hWnd);
-
 // Three locally stored sudokus for user to load
-uint8_t localSDKU1[81] = {0, 0, 8, 4, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 9, 4, 0, 0, 4, 5, 0, 0, 0, 0, 2, 3, 0, 1, 0, 0, 6, 4, 0, 0, 0, 0, 0, 7, 2, 0, 8, 4, 0, 0, 0, 0, 0, 9, 7, 0, 0, 6, 0, 9, 6, 0, 0, 0, 0, 1, 5, 0, 0, 8, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 7, 0, 0};
-uint8_t localSDKU2[81] = {0, 0, 0, 0, 2, 0, 6, 0, 9, 2, 6, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 2, 9, 0, 8, 3, 0, 1, 7, 0, 5, 4, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 2, 0, 0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 1, 3, 6, 0, 9, 0, 7, 0, 0, 0, 0};
-uint8_t localSDKU3[81] = {0, 0, 6, 0, 0, 0, 0, 0, 3, 8, 2, 0, 0, 9, 6, 0, 0, 0, 9, 3, 0, 4, 0, 0, 0, 1, 0, 7, 8, 0, 0, 1, 0, 0, 0, 0, 0, 9, 0, 0, 4, 0, 0, 3, 0, 0, 0, 0, 0, 7, 0, 0, 6, 2, 0, 1, 0, 0, 0, 2, 0, 4, 6, 0, 0, 0, 7, 3, 0, 0, 9, 1, 2, 0, 0, 0, 0, 0, 3, 0, 0};
+uint8_t localSDKU1[81] = {0, 0, 6, 0, 0, 0, 0, 0, 3, 8, 2, 0, 0, 9, 6, 0, 0, 0, 9, 3, 0, 4, 0, 0, 0, 1, 0, 7, 8, 0, 0, 1, 0, 0, 0, 0, 0, 9, 0, 0, 4, 0, 0, 3, 0, 0, 0, 0, 0, 7, 0, 0, 6, 2, 0, 1, 0, 0, 0, 2, 0, 4, 6, 0, 0, 0, 7, 3, 0, 0, 9, 1, 2, 0, 0, 0, 0, 0, 3, 0, 0};
+uint8_t localSDKU2[81] = {4, 7, 0, 0, 3, 2, 0, 0, 0, 0, 6, 2, 5, 9, 0, 0, 3, 0, 0, 3, 8, 7, 0, 4, 2, 0, 9, 8, 0, 1, 2, 5, 0, 4, 0, 3, 0, 4, 0, 0, 7, 1, 0, 0, 6, 7, 2, 0, 3, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 4, 0, 7, 5, 0, 8, 2, 0, 0, 0, 8, 0, 0, 9, 7};
+uint8_t localSDKU3[81] = {2, 0, 0, 0, 7, 0, 3, 0, 0, 7, 0, 3, 9, 1, 6, 0, 0, 0, 0, 0, 6, 0, 8, 0, 1, 5, 0, 0, 0, 1, 0, 9, 4, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 8, 0, 0, 0, 6, 2, 0, 0, 0, 4, 0, 5, 0, 7, 0, 0, 6, 0, 0, 2, 8, 0, 8, 0, 0, 0, 9, 7, 6, 0};
 
 // Handle for solver thread
 HANDLE sudokuSolveThread;
@@ -71,7 +68,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     }
 
     // Create window
-    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 540, 750, NULL, NULL, hInstance, NULL);
+    hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT, 540, 750, NULL, NULL, hInstance, NULL);
 
     if (!hWnd)
     {
@@ -146,7 +143,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
                 MessageBox(hWnd, L"Error! Failed so solve", L"Thread Failure", MB_ICONERROR);
             }
-
         } break;
         case RESTART_BTN_CLICK:
         {        
@@ -185,10 +181,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } break;
         case ID_FILE_LOADSUDOKU:
         {
-            /*
-            * Load one of 3 puzzles from memory onto board
-            */
-
+            // Load one of 3 puzzles from memory onto board
             if (sudokuSolveThread)
             {
                 LPDWORD exitCode;
@@ -237,10 +230,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             int column = solveData.column;
             int boxAddr = SUDOKU_CTRL_BASE_VALUE + (row * 9) + column;
 
+            // TODO - make placement box be coloured green or red background
+
             if (solveData.action == SDKU_NUMBER_PUT)
             {
-                int numPlace = solveData.number;
-                SetDlgItemInt(hWnd, boxAddr, numPlace, FALSE);
+                SetDlgItemInt(hWnd, boxAddr, solveData.number, FALSE);
             }
             else if (solveData.action == SDKU_NUMBER_RM)
             {
@@ -285,53 +279,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         addFonts(hWnd);
     } break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            HDC hdc_x = CreateCompatibleDC(NULL);
-            // Add any drawing code that uses hdc here...
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hWnd, &ps);
+        HDC hdc_x = CreateCompatibleDC(NULL);
+        // Add any drawing code that uses hdc here...
 
-            // Background colour for window
-            HBRUSH myBrush = CreateSolidBrush(RGB(145, 171, 199));
-            FillRect(hdc, &ps.rcPaint, myBrush);
+        // Background colour for window
+        HBRUSH myBrush = CreateSolidBrush(RGB(145, 171, 199));
+        FillRect(hdc, &ps.rcPaint, myBrush);
 
-            // Writing text to window
-            RECT rectWnd;
-            GetWindowRect(hWnd, &rectWnd);
-            BitBlt(hdc, 0, 0, rectWnd.right - rectWnd.left, rectWnd.bottom, hdc_x, 0, 0, SRCCOPY);
+        // Writing text to window
+        RECT rectWnd;
+        GetWindowRect(hWnd, &rectWnd);
+        BitBlt(hdc, 0, 0, rectWnd.right - rectWnd.left, rectWnd.bottom, hdc_x, 0, 0, SRCCOPY);
 
-            long lfHeight;
-            HFONT hFont;
+        long lfHeight;
+        HFONT hFont;
 
-            // Write Title at top of window
-            lfHeight = -MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-            hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Showcard Gothic");
-            SelectObject(hdc, hFont);
-            SetTextColor(hdc, RGB(0, 0, 0));
-            SetBkMode(hdc, TRANSPARENT);
-            TextOut(hdc, 130, 20, L"SUDOKU SOLVER", strlen("SUDOKU SOLVER"));
+        // Write Title at top of window
+        lfHeight = -MulDiv(24, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+        hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Showcard Gothic");
+        SelectObject(hdc, hFont);
+        SetTextColor(hdc, RGB(0, 0, 0));
+        SetBkMode(hdc, TRANSPARENT);
+        TextOut(hdc, 130, 20, L"SUDOKU SOLVER", strlen("SUDOKU SOLVER"));
 
-            // Write subtitle under main title
-            lfHeight = -MulDiv(14, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-            hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, PROOF_QUALITY, 0, L"Calibri");
-            SelectObject(hdc, hFont);
-            TextOut(hdc, 130, 60, L"Backtracking algorithm visualizer", strlen("Backtracking algorithm visualizer"));
+        // Write subtitle under main title
+        lfHeight = -MulDiv(14, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+        hFont = CreateFont(lfHeight, 0, 0, 0, FW_NORMAL, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, PROOF_QUALITY, 0, L"Calibri");
+        SelectObject(hdc, hFont);
+        TextOut(hdc, 130, 60, L"Backtracking algorithm visualizer", strlen("Backtracking algorithm visualizer"));
 
-            // Green colour "FAST" and red colour "SLOW"
-            lfHeight = -MulDiv(20, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-            hFont = CreateFont(lfHeight, 0, 0, 0, FW_SEMIBOLD, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Bahnschrift Condensed");
-            SelectObject(hdc, hFont);
-            SetTextColor(hdc, RGB(18, 105, 41));
-            SetBkMode(hdc, TRANSPARENT);
-            TextOut(hdc, 35, 535, L"FAST!", strlen("FAST!"));
+        // Green colour "FAST" and red colour "SLOW"
+        lfHeight = -MulDiv(20, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+        hFont = CreateFont(lfHeight, 0, 0, 0, FW_SEMIBOLD, TRUE, 0, 0, 0, OUT_TT_ONLY_PRECIS, 0, ANTIALIASED_QUALITY, 0, L"Bahnschrift Condensed");
+        SelectObject(hdc, hFont);
+        SetTextColor(hdc, RGB(18, 105, 41));
+        SetBkMode(hdc, TRANSPARENT);
+        TextOut(hdc, 35, 535, L"FAST!", strlen("FAST!"));
 
-            SetTextColor(hdc, RGB(160, 0, 0));
-            TextOut(hdc, 412, 535, L"SLOW!", strlen("SLOW!"));
+        SetTextColor(hdc, RGB(160, 0, 0));
+        TextOut(hdc, 412, 535, L"SLOW!", strlen("SLOW!"));
 
-            ReleaseDC(hWnd, hdc);
-            EndPaint(hWnd, &ps);
-        }
-        break;
+        ReleaseDC(hWnd, hdc);
+        EndPaint(hWnd, &ps);
+    } break;
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
@@ -340,6 +333,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return 0;
 }
+
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -360,6 +354,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return (INT_PTR)FALSE;
 }
+
 
 /*
 * Adding sudoku grid controls, static titles and buttons
@@ -446,6 +441,7 @@ void addControls(HWND hWnd)
     UpdateWindow(closeBtn);
 }
 
+
 /*
 * Adds the desired fonts to title, sudoku cells and buttons
 */
@@ -478,18 +474,6 @@ void addFonts(HWND hWnd)
     ReleaseDC(NULL, hdc);
 }
 
-/*
-* Clears all values on active sudoku board
-*/
-void clearSudokuBoard(HWND hWnd)
-{
-    for (int i = 0; i < 81; i++)
-    {
-        int row = i / 9;
-        int column = i % 9;
-        SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
-    }
-}
 
 /*
 * Driver function to solve sudoku - processed in new thread when 'Solve' clicked 

@@ -43,16 +43,22 @@
     <Image Include="Sudoku_GUI.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Sudoku_GUI.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sudoku_solve.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sudoku_GUI.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sudoku_solve.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Sudoku_GUI.aps" />
   </ItemGroup>
 </Project>

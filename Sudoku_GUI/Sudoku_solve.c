@@ -10,6 +10,22 @@ static int ascendSort(const void* a, const void* b) {
 }
 
 
+/************************************************************ GUI MANAGEMENT ************************************************************/
+
+/*
+* Clears all values on active sudoku board
+*/
+void clearSudokuBoard(HWND hWnd)
+{
+    for (int i = 0; i < 81; i++)
+    {
+        int row = i / 9;
+        int column = i % 9;
+        SetDlgItemText(hWnd, (SUDOKU_CTRL_BASE_VALUE + i), NULL);
+    }
+}
+
+
 /******************************************************* USER INPUT VALIDATION FUNCTIONS ************************************************/
 
 /*
