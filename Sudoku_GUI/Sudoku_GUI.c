@@ -58,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 6);
     wcex.lpszMenuName = MAKEINTRESOURCEW(IDC_SUDOKUGUI);
     wcex.lpszClassName = szWindowClass;
-    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SUDOKUGUI));
 
     // Register window class
     if (!RegisterClassExW(&wcex))
