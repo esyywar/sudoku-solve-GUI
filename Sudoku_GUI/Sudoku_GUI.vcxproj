@@ -120,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,11 +161,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sudoku_GUI.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico" />
-    <Image Include="Sudoku_GUI.ico" />
-    <Image Include="Sudoku_GUI.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sudoku_GUI.aps" />

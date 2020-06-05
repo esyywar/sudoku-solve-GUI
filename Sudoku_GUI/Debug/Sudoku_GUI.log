@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  Sudoku_solve.c
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(162,98): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(162,98): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
@@ -10,3 +11,6 @@ C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sud
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(337,98): warning C4047: 'function': 'LPARAM' differs in levels of indirection from 'Sudoku_Append_t *'
 C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Sudoku_GUI\Sudoku_solve.c(337,98): warning C4024: 'SendMessageW': different types for formal and actual parameter 4
   Sudoku_GUI.vcxproj -> C:\Users\rahul\Desktop\Dev_Projects\Applications\sudoku-solve-GUI\Debug\Sudoku_GUI.exe
+=======
+﻿  Sudoku_GUI.vcxproj -> D:\Rahul's Stuff\Developments\Applications\sudoku-solve-GUI\Debug\Sudoku_GUI.exe
+>>>>>>> 6cf18b8fa5f884ca243e367eb285c09506073178
